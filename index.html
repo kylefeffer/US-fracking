@@ -1,0 +1,71 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Fracking in the US</title>
+        
+        <!--main stylesheet-->
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+    </head>
+    
+    <body>
+      <div id = "main">      
+        <div id="sidebar">
+          <div id ="sidebarContainer">
+            <div class="container" id="dataDropdown">Select a data layer:
+              <div class ="filterDiv safety">
+                <input type="checkbox" value="safety"> Safety
+              </div>
+              <div class ="filterDiv environment">
+                <input type="checkbox" value="environment">Environment
+              </div>
+              <div class ="filterDiv employment">
+                <input type="checkbox" value="employment">Employment
+              </div>
+              <div class ="filterDiv geology">
+                <input type="checkbox" value="geology">Geology
+              </div>
+            </div>
+
+            <!-- this part should be dynamic based on dropdown selection -->
+            <div class="container" id="filtersDropdown">Select filters:</div>
+            <div class="container" id="legend">Legend<br></div>
+          </div>
+        </div>
+
+          <p></p>
+          <h5>Sources: </h5>
+        </div>
+        <div id = "banner">
+          <div class ="container" id = "title">
+            <h1>Fracking in the US</h1>
+          </div>
+          <div class="topnav" id="navigation">
+            <a href="#info">Info</a>
+            <a href="#stats">Statistics</a>
+            <a href="#faq">FAQ</a>
+            <a href="#sources">Sources</a>
+          </div> 
+      </div>
+
+        <div id="content">
+          <div class="container" id="map"></div>
+        </div>
+      </div>
+        
+        
+
+        
+
+      <!--libraries-->
+
+      <script src="lib/jquery-3.5.1.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.13.0/d3.js"></script>
+      <script src="lib/topojson.js"></script>
+      <script src="lib/queue.js"></script>
+      <script src="lib/simple-statistics.js"></script>
+
+        <!--link to main javascript file-->
+      <script src="js/main.js"></script>
+    </body>
+</html>
