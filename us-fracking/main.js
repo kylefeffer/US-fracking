@@ -43,11 +43,6 @@ function processAirPollutionData(data){
     return airpollutionattributes;
 };
 
-    // for (var attribute in properties) {
-    //   if (attribute.indexOf("Name_count") > -1){
-    //     airpollutionattributes.push(attribute);
-    //   }
-    // }
 
 function getColor(d) {
     return d > 20000000 ? '#000000' :
