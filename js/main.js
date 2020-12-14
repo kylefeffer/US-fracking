@@ -3,6 +3,8 @@ var map;
 var legend;
 var FracByState = L.layerGroup();
 var FracWellPoints = L.layerGroup();
+var AirPollution = L.layerGroup();
+var Fraccidents = L.layerGroup();
 
 function createMap() {
   var osm = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -11,7 +13,7 @@ function createMap() {
   });
 
   
-  map = L.map("mapdiv", {
+  map = L.map("map", {
     center: [40, -110],
     zoom: 4,
     zoomControl: false,
@@ -50,6 +52,23 @@ function createMap() {
           layer: FracWellPoints
         }
       ]
+    },
+    {
+      group: "Environmental Impacts",
+      layers: [
+        {
+          active: false,
+          name: 'Air Pollution',
+          icon: '<i class="fa-globe" aria-hidden="true"></i>',
+          layer: AirPollution
+        },
+        {
+          active: false,
+          name: 'Fracking Accidents',
+          icon: '<i class="fa-globe" aria-hidden="true"></i>',
+          layer: Fraccidents
+        }
+      ]
     }
   ];
 
@@ -67,12 +86,15 @@ function createMap() {
 
   //getFracPointData(map, FracWellPoints);
   getFracStateData(map, FracByState);
-  
-
+  getAirPolData(map, AirPollution);
+  getFraccidentData(map, Fraccidents);
 
   map.on('overlayremove', function(eventLayer){
     if (eventLayer.name == 'Fracking By State'){ // We use the key/display name to refer to the layer
       map.removeControl(legend); // legend is the variable name of the layer legend
+    }
+    else if (eventLayer.name == 'Air Pollution'){
+      map.removeControl(legend);
     }
   });
 
@@ -82,17 +104,20 @@ function createMap() {
       //console.log(eventLayer.name);
       createFracStateLegend(map);
     }
+    else if (eventLayer.name == 'Air Pollution'){
+      createAirPollutionLegend(map);
+    }
   });
 }
 
 ///////Fracking Point Location layer//////////
-function getFracPointData(map) {
+function getFracPointData(map, layer) {
   $.ajax("data/FracFocusPoints.geojson", {
     dataType: "json",
     success: function (response) {
       //create attribute array
       //var attributes = processWellData(response);
-      createMarkers(response, FracWellPoints);
+      createWellMarkers(response, FracWellPoints);
     },
   });
 }
@@ -114,7 +139,7 @@ function processWellData(data) {
   return attributes;
 }
 
-function createMarkers(data, layer) {
+function createWellMarkers(data, layer) {
   //create layer and add to map
   var markers = L.markerClusterGroup();
 
@@ -178,7 +203,7 @@ function processFracStateData(data) {
 }
 
 ///Natural Breaks Distribution///
-function getColor(d) {
+function getFracStateColor(d) {
   return  d > 17392 ? "#800026": 
           d > 13860 ? "#BD0026":
           d > 7053 ? "#E31A1C":
@@ -191,7 +216,7 @@ function getColor(d) {
 
 function FracStatestyle(feature) {
   return {
-      fillColor: getColor(feature.properties.NAME_count),
+      fillColor: getFracStateColor(feature.properties.NAME_count),
       weight: 1,
       opacity: 1,
       color: 'white',
@@ -241,7 +266,7 @@ function createFracStateLegend(map) {
         to = grades[i + 1];
 
         labels.push(
-            '<i style="background:' + getColor(from + 1) + '"></i> ' +
+            '<i style="background:' + getFracStateColor(from + 1) + '"></i> ' +
             from + (to ? '&ndash;' + to : '+'));
     }
 
@@ -253,6 +278,195 @@ function createFracStateLegend(map) {
 }
 
 ///////End Fracking State Chloropleth Layer///////
+
+///////Begin Air Pollution Layer//////////
+function getAirPolData(map){
+  //load the data
+  $.ajax("data/AirPollution.geojson", {
+      dataType: "json",
+      success: function(response){
+        var airpollutionattributes = processAirPollutionData(response);
+          //create a Leaflet GeoJSON layer and add it to the map
+          // L.geoJson(response).addTo(map);
+          createAirPollutionChoro(response, AirPollution);
+          //createAirPollutionLegend(response, map);
+      }
+  });
+};
+
+
+//initial creation of attributes
+function processAirPollutionData(data){
+  //empty array to hold attributes
+  var airpollutionattributes = [];
+
+  //properties of the first feature in the dataset
+  var properties = data.features[0].properties;
+
+  return airpollutionattributes;
+};
+
+
+function getAirPollutionColor(d) {
+  return d > 20000000 ? '#000000' :
+         d > 5000000  ? '#073146' :
+         d > 2000000  ? '#0b5174' :
+         d > 500000   ? '#1072a2' :
+         d > 100000   ? '#1592d1' :
+         d > 10000   ? '#9fcadf' :
+                    '#E8E8E8';
+}
+
+function AirPollutionStyle(feature){
+return {
+  fillColor: getAirPollutionColor(feature.properties.Metric_tons_of_carbon_dioxide_equivalent),
+  weight: 2,
+  opacity: 1,
+  color: 'white',
+  fillOpacity: 0.7
+};
+}
+
+
+function AirPollutiononEachFeature(feature, layer, map){
+layer.bindPopup(feature.properties.State + "<br>" + feature.properties.Metric_tons_of_carbon_dioxide_equivalent + " metric tons of CO2 equivalent");
+
+
+layer.on({
+    mouseover: function(){
+        this.openPopup();
+    },
+    mouseout: function(){
+        this.closePopup();
+    },
+    click: function(){
+        $("#info-panel").html(popupContent);
+    }
+});
+}
+
+function createAirPollutionChoro(data, layer){
+var AirPollutionChoro = L.geoJson(data, {
+  style: AirPollutionStyle,
+  onEachFeature: AirPollutiononEachFeature
+})
+
+AirPollutionChoro.addTo(layer);
+}
+
+function createAirPollutionLegend(map) {
+legend = L.control({position: 'bottomright'});
+legend.onAdd = function (map) {
+
+  var div = L.DomUtil.create('div', 'info legend'),
+      grades = [0, 10000, 100000, 500000, 2000000, 5000000, 20000000],
+      labels = [];
+
+  // loop throughdensity intervals and generate a label with a colored square for each interval
+  for (var i = 0; i < grades.length; i++) {
+    from = grades[i];
+    to = grades[i + 1];
+
+    labels.push(
+        '<i style="background:' + getAirPollutionColor(from + 1) + '"></i> ' +
+        from + (to ? '&ndash;' + to : '+'));
+  }
+
+  div.innerHTML = labels.join('<br>');
+  return div;
+};
+
+legend.addTo(map);
+}
+////////////////End Air Pollution Layer///////////////////
+
+//////////////Begin Fraccident Layer /////////////////////
+//Import GeoJSON data
+function getFraccidentData(map){
+  //load the data
+  $.ajax("data/Fraccidents.geojson", {
+      dataType: "json",
+      success: function(response){
+        //var fraccidentsattributes = processFraccidentsData(response);
+        
+        createMarker(response, Fraccidents);
+
+          //create a Leaflet GeoJSON layer and add it to the map
+          //L.geoJson(response).addTo(layer);
+      }
+  });
+};
+
+/* //initial creation of attributes
+function processFraccidentsData(data){
+  //empty array to hold attributes
+  var fraccidentsattributes = [];
+
+  //properties of the first feature in the dataset
+  var properties = data.features[0].properties;
+
+  return fraccidentsattributes;
+}; */
+
+//function to convert markers to circle markers
+function FraccidentpointToLayer(feature, latlng){
+  //create marker options
+  var myIcon = L.icon({
+      iconUrl: 'img/fraccidents.png',
+      shadowUrl: 'img/fraccidents_shadow.png',
+
+      iconSize:     [38, 60], // size of the icon
+      shadowSize:   [50, 64], // size of the shadow
+      iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+      shadowAnchor: [4, 62],  // the same for the shadow
+      popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+  });
+
+  return L.marker(latlng, {
+    icon: myIcon
+  });
+};
+
+function FraccidentonEachFeature (feature, layer) {
+  layer._leaflet_id = feature.properties.WellName;
+
+      var popupContent = "<p><b>City:</b> " + feature.properties.Name + "</p><p><b>";
+
+      if (feature.properties && feature.properties.popupContent) {
+        popupContent += feature.properties.popupContent;
+      }
+      layer.bindPopup(popupContent);
+   //event listeners to open popup on hover and fill panel on click
+   layer.on({
+    mouseover: function(){
+        this.openPopup();
+    },
+    mouseout: function(){
+        this.closePopup();
+    },
+    click: function(){
+        $("#info-panel").html(popupContent);
+    }
+});
+
+//return the circle marker to the L.geoJson pointToLayer option
+return layer;
+}
+  
+
+// // //Add circle markers for point features to the map
+function createMarker(data, layer){
+  var FraccidentPoints = L.geoJson(data, {
+    pointToLayer: FraccidentpointToLayer,
+    onEachFeature: FraccidentonEachFeature
+  });
+
+  FraccidentPoints.addTo(layer);
+}
+
+/////////////////End Fraccident Layer/////////////////////
+
+
 
 //calls function to create map
 $(document).ready(createMap);
