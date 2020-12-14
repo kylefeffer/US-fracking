@@ -21,20 +21,54 @@ function createMap() {
   var zoomHome = L.Control.zoomHome({ position: "topright" });
   zoomHome.addTo(map);
 
-  var baseLayer = {
-    'Open StreetMap': osm
-  };
+  var baseLayers = [
+    {
+      group: "Basemaps",
+      layers: [
+        {
+          active: true,
+          name: 'Open StreetMap',
+          layer: osm
+        }
+      ]
+    }
+  ];
 
-  var overlay = {
-    'Fracking By State': FracByState,
-    'Fracking Well Points': FracWellPoints
-  };
+  var overLayers = [
+    {
+      group: "Fracking Locations",
+      layers: [
+        {
+          active: true,
+          name: 'Fracking By State',
+          icon: '<i class="fa-globe" aria-hidden="true"></i>',
+          layer: FracByState
+        },
+        {
+          name: 'Fracking Well Points',
+          icon: '<i class="icon icon-water"></i>',
+          layer: FracWellPoints
+        }
+      ]
+    }
+  ];
 
-  getFracPointData(map, FracWellPoints);
+  //add layer controls to map
+  //var controlLayers = L.control.layers(baseLayer, overlay).addTo(map);
+  var panelLayers = new L.Control.PanelLayers(baseLayers, overLayers, {
+    compact: true,
+    collapsibleGroups: true,
+    position: 'topleft',
+    title: "Select Layer"
+  });
+
+  map.addControl(panelLayers);
+
+
+  //getFracPointData(map, FracWellPoints);
   getFracStateData(map, FracByState);
   
-  //add layer controls to map
-  var controlLayers = L.control.layers(baseLayer, overlay).addTo(map);
+
 
   map.on('overlayremove', function(eventLayer){
     if (eventLayer.name == 'Fracking By State'){ // We use the key/display name to refer to the layer
