@@ -412,14 +412,10 @@ function processFraccidentsData(data){
 function FraccidentpointToLayer(feature, latlng){
   //create marker options
   var myIcon = L.icon({
-      iconUrl: 'img/fraccidents.png',
-      shadowUrl: 'img/fraccidents_shadow.png',
-
-      iconSize:     [38, 60], // size of the icon
-      shadowSize:   [50, 64], // size of the shadow
-      iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
-      shadowAnchor: [4, 62],  // the same for the shadow
-      popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+      iconUrl: 'img/fraccident.png',
+      iconSize:     [15, 15], // size of the icon
+      iconAnchor:   [0, 0], // point of the icon which will correspond to marker's location
+      popupAnchor:  [0, 0] // point from which the popup should open relative to the iconAnchor
   });
 
   return L.marker(latlng, {
