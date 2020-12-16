@@ -76,7 +76,7 @@ h1 {
 }
 
 #map {
-  height: 400px;
+  height: 650px;
   width: 100%;
   margin: 16px;
   display: inline-block;
@@ -120,6 +120,5 @@ body {
 }
 
 .leaflet-marker-icon,
-.leaflet-marker-shadow {
 display: block;
 }
