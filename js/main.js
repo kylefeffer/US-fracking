@@ -6,6 +6,9 @@ var FracByState = L.layerGroup();
 var FracWellPoints = L.layerGroup();
 var AirPollution = L.layerGroup();
 var Fraccidents = L.layerGroup();
+var EarthquakesBaseline = L.layerGroup();
+var EarthquakesCurrent = L.layerGroup();
+var Economics = L.layerGroup();
 
 function createMap() {
   var osm = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -22,7 +25,8 @@ function createMap() {
   });
 
   var zoomHome = L.Control.zoomHome({ position: "topright" });
-  zoomHome.addTo(map);
+    zoomHome.addTo(map);
+
 
   var baseLayers = [
     {
@@ -44,12 +48,12 @@ function createMap() {
         {
           active: true,
           name: 'Fracking By State',
-          icon: '<i class="fa-globe" aria-hidden="true"></i>',
+          icon: '<i class="fas fa-oil-can"></i>',
           layer: FracByState
         },
         {
           name: 'Fracking Well Points',
-          icon: '<i class="icon icon-water"></i>',
+          icon: '<i class="fas fa-oil-can"></i>',
           layer: FracWellPoints
         }
       ]
@@ -60,14 +64,42 @@ function createMap() {
         {
           active: false,
           name: 'Air Pollution',
-          icon: '<i class="fa-globe" aria-hidden="true"></i>',
+          icon: '<i class="fas fa-smog"></i>',
           layer: AirPollution
         },
         {
           active: false,
           name: 'Fracking Accidents',
-          icon: '<i class="fa-globe" aria-hidden="true"></i>',
+          icon: '<i class="fas fa-skull-crossbones"></i>',
           layer: Fraccidents
+        }
+      ]
+    },
+    {
+      group: "Geologic Impacts",
+      layers: [
+        {
+          active: false,
+          name: 'Earthquakes - Baseline (2000)',
+          icon: '<i class="fas fa-bacon"></i>',
+          layer: EarthquakesBaseline
+        },
+        {
+          active: false,
+          name: 'Earthquakes - Current (2020)',
+          icon: '<i class="fas fa-bacon"></i>',
+          layer: EarthquakesCurrent
+        }
+      ]
+    },
+    {
+      group: "Economic Impacts",
+      layers: [
+        {
+          active: false,
+          name: 'Total Employment',
+          icon: '<i class="fas fa-money-bill-wave"></i>',
+          layer: Economics
         }
       ]
     }
@@ -89,6 +121,9 @@ function createMap() {
   getFracStateData(map, FracByState);
   getAirPolData(map, AirPollution);
   getFraccidentData(map, Fraccidents);
+  getEconStateData(map, Economics);
+  getEarthquakeBaselineData(map, EarthquakesBaseline);
+  getEarthquakeData(map, EarthquakesCurrent);
   getCSVdata();
 
   map.on('overlayremove', function(eventLayer){
@@ -98,17 +133,22 @@ function createMap() {
     else if (eventLayer.name == 'Air Pollution'){
       map.removeControl(legend);
     }
+    else if (eventLayer.name == 'Total Employment'){
+      map.removeControl(legend);
+    }
   });
 
   // Adding the legend when the layer is added
   map.on('overlayadd', function(eventLayer){
     if (eventLayer.name == 'Fracking By State'){
       //console.log(eventLayer.name);
-      
       createFracStateLegend(map);
     }
     else if (eventLayer.name == 'Air Pollution'){
       createAirPollutionLegend(map);
+    }
+    else if (eventLayer.name == 'Total Employment'){
+      createEconStateLegend(map);
     }
   });
 }
@@ -214,7 +254,7 @@ function getFracStateColor(d) {
           d > 781  ? "#FD8D3C": 
           d > 221  ? "#FEB24C": 
           d > 1  ? "#FED976": 
-                    "#FFEDA0";
+                    "#E8E8E8";
 }
 
 function FracStatestyle(feature) {
@@ -257,6 +297,7 @@ function createFracStateChloro(data, layer) {
 
 function createFracStateLegend(map) {
   if (legend instanceof L.Control) { map.removeControl(legend); }
+  
   legend = L.control({
     position: 'bottomright'
   });
@@ -364,7 +405,7 @@ AirPollutionChoro.addTo(layer);
 function createAirPollutionLegend(map) {
   if (legend instanceof L.Control) { map.removeControl(legend); }
 
-  legend = L.control({position: 'bottomright'});
+legend = L.control({position: 'bottomright'});
 legend.onAdd = function (map) {
 
   var div = L.DomUtil.create('div', 'info legend'),
@@ -421,10 +462,10 @@ function processFraccidentsData(data){
 function FraccidentpointToLayer(feature, latlng){
   //create marker options
   var myIcon = L.icon({
-    iconUrl: 'img/fraccident.png',
-    iconSize:     [15, 15], // size of the icon
-    iconAnchor:   [0, 0], // point of the icon which will correspond to marker's location
-    popupAnchor:  [0, 0] // point from which the popup should open relative to the iconAnchor
+      iconUrl: 'img/fraccident.png',
+      iconSize:     [15, 15], // size of the icon
+      iconAnchor:   [0, 0], // point of the icon which will correspond to marker's location
+      popupAnchor:  [0, 0] // point from which the popup should open relative to the iconAnchor
   });
 
   return L.marker(latlng, {
@@ -564,6 +605,333 @@ function parseCSV(str, opts = {headers: true}) {
     return arr;
   }
 }
+
+
+//////////////Begin Earthquake - Baseline Layer /////////////////////
+//Import GeoJSON data
+function getEarthquakeBaselineData(map, layer){
+  //load the data
+  $.ajax("data/earthquakesBaseline.geojson", {
+      dataType: "json",
+      success: function(response){
+        var EarthquakeBaselineattributes = processEarthquakesBaselineData(response);
+        createPropSymbolsBaseline(response, map, EarthquakeBaselineattributes, layer);
+
+          // //create a Leaflet GeoJSON layer and add it to the map
+          // L.geoJson(response).addTo(layer);
+      }
+  });
+};
+
+ //initial creation of attributes
+function processEarthquakesBaselineData(data){
+  //empty array to hold attributes
+  var EarthquakeBaselineattributes = [];
+
+  //properties of the first feature in the dataset
+  var EarthquakeBaselineproperties = data.features[0].properties;
+
+      //push each attribute name into attributes array
+    for (var magattribute in EarthquakeBaselineproperties){
+        //only take attributes with year over year values
+        if (magattribute.indexOf("mag") > -1){
+            EarthquakeBaselineattributes.push(magattribute);
+        };
+    };
+
+  return EarthquakeBaselineattributes;
+}; 
+
+//Add circle markers for point features to the map
+function createPropSymbolsBaseline(data, map, EarthquakeBaselineattributes, layer){
+    //create a Leaflet GeoJSON layer and add it to the map
+    L.geoJson(data, {
+        pointToLayer: function(feature, latlng){
+            return EarthquakeBaselinepointToLayer(feature, latlng, EarthquakeBaselineattributes);
+        }
+    }).addTo(layer);
+};
+
+function calcPropRadius(attValue, scale = 25) {
+    //scale factor to adjust symbol size evenly
+    var scaleFactor = scale;
+    //area based on attribute value and scale factor
+    var area = Math.abs(attValue) * scaleFactor;
+    //radius calculated based on area
+    var radius = Math.sqrt(area/Math.PI);
+
+    return radius;
+};
+
+//function to convert markers to circle markers
+function EarthquakeBaselinepointToLayer(feature, latlng, attributes){
+    //Assign the current attribute based on the first index of the attributes array
+    var attribute = attributes[0];
+
+    var options = {
+        fillColor: "red",
+        color: "#ccc",
+        weight: 0,
+        opacity: 0,
+        fillOpacity: 0.2
+    };
+
+    //For each feature, determine its value for the selected attribute
+    var attValue = Number(feature.properties[attribute]);
+
+    //Give each feature's circle marker a radius based on its attribute value
+    options.radius = calcPropRadius(attValue);
+
+    //create circle marker layer
+    var layer = L.circleMarker(latlng, options);
+
+    //build popup content string
+    var popupContent = "<p><b>Magnitude:</b> " + feature.properties.mag + "</p>";
+
+    //add formatted attribute to popup content string
+   
+    //bind the popup to the circle marker
+    layer.bindPopup(popupContent, {
+        offset: new L.Point(0, -options.radius)
+    });
+
+    //event listeners to open popup on hover and fill panel on click
+    layer.on({
+        mouseover: function(){
+            this.openPopup();
+        },
+        mouseout: function(){
+            this.closePopup();
+        },
+        click: function(){
+            $("#info-panel").html(popupContent);
+        }
+    });
+
+    //return the circle marker to the L.geoJson pointToLayer option
+    return layer;
+};
+
+/////////////////End Earthquake - Baseline Layer/////////////////////
+
+
+//////////////Begin Earthquake - Current Layer /////////////////////
+//Import GeoJSON data
+function getEarthquakeData(map, layer){
+  //load the data
+  $.ajax("data/earthquakesCurrent.geojson", {
+      dataType: "json",
+      success: function(response){
+        var Earthquakeattributes = processEarthquakesData(response);
+        createPropSymbols(response, map, Earthquakeattributes, layer);
+
+          // //create a Leaflet GeoJSON layer and add it to the map
+          // L.geoJson(response).addTo(layer);
+      }
+  });
+};
+
+ //initial creation of attributes
+function processEarthquakesData(data){
+  //empty array to hold attributes
+  var Earthquakeattributes = [];
+
+  //properties of the first feature in the dataset
+  var Earthquakeproperties = data.features[0].properties;
+
+      //push each attribute name into attributes array
+    for (var magattribute in Earthquakeproperties){
+        //only take attributes with year over year values
+        if (magattribute.indexOf("mag") > -1){
+            Earthquakeattributes.push(magattribute);
+        };
+    };
+
+  return Earthquakeattributes;
+}; 
+
+//Add circle markers for point features to the map
+function createPropSymbols(data, map, Earthquakeattributes, layer){
+    //create a Leaflet GeoJSON layer and add it to the map
+    L.geoJson(data, {
+        pointToLayer: function(feature, latlng){
+            return EarthquakepointToLayer(feature, latlng, Earthquakeattributes);
+        }
+    }).addTo(layer);
+};
+
+function calcPropRadius(attValue, scale = 50) {
+    //scale factor to adjust symbol size evenly
+    var scaleFactor = scale;
+    //area based on attribute value and scale factor
+    var area = Math.abs(attValue) * scaleFactor;
+    //radius calculated based on area
+    var radius = Math.sqrt(area/Math.PI);
+
+    return radius;
+};
+
+//function to convert markers to circle markers
+function EarthquakepointToLayer(feature, latlng, attributes){
+    //Assign the current attribute based on the first index of the attributes array
+    var attribute = attributes[0];
+
+    var options = {
+        fillColor: "green",
+        color: "#ccc",
+        weight: 0,
+        opacity: 0,
+        fillOpacity: 0.2
+    };
+
+    //For each feature, determine its value for the selected attribute
+    var attValue = Number(feature.properties[attribute]);
+
+    //Give each feature's circle marker a radius based on its attribute value
+    options.radius = calcPropRadius(attValue);
+
+    //create circle marker layer
+    var layer = L.circleMarker(latlng, options);
+
+    //build popup content string
+    var popupContent = "<p><b>Magnitude:</b> " + feature.properties.mag + "</p>";
+
+    //add formatted attribute to popup content string
+   
+    //bind the popup to the circle marker
+    layer.bindPopup(popupContent, {
+        offset: new L.Point(0, -options.radius)
+    });
+
+    //event listeners to open popup on hover and fill panel on click
+    layer.on({
+        mouseover: function(){
+            this.openPopup();
+        },
+        mouseout: function(){
+            this.closePopup();
+        },
+        click: function(){
+            $("#info-panel").html(popupContent);
+        }
+    });
+
+    //return the circle marker to the L.geoJson pointToLayer option
+    return layer;
+};
+
+/////////////////End Earthquake - Current Layer/////////////////////
+
+///////Begin Economics State Chloropleth Layer///////
+function getEconStateData(map) {
+  $.ajax("data/Economics.geojson", {
+    dataType: "json",
+    success: function (response) {
+      //create attribute array
+      var EconStateattributes = processEconStateData(response);
+      console.log(EconStateattributes)
+      //function to create chloropleth
+      createEconStateChloro(response, Economics);
+    },
+  });
+}
+
+function processEconStateData(data) {
+  //empty array for attributes
+  var EconStateattributes = [];
+
+  //take properties of first feature
+  var properties = data.features[0].properties;
+
+  //push each attribute name to array
+  for (var attribute in properties) {
+    if (attribute.indexOf("economics_tot_emp") > -1) {
+      EconStateattributes.push(attribute);
+    }
+  }
+  
+  return EconStateattributes;
+}
+
+///Natural Breaks Distribution///
+function getEconStateColor(d) {
+  return  d > 16400 ? "#005a32": 
+          d > 6300  ? "#238443":
+          d > 3520  ? "#41ab5d":
+          d > 2460  ? "#78c679": 
+          d > 1190  ? "#addd8e": 
+          d > 510   ? "#d9f0a3": 
+          d > 0     ? "#ffffcc": 
+                      "#E8E8E8";
+}
+
+function EconStatestyle(feature) {
+  return {
+      fillColor: getEconStateColor(feature.properties.economics_tot_emp),
+      weight: 1,
+      opacity: 1,
+      color: 'white',
+      fillOpacity: 0.7
+  };
+}
+
+function EconStateonEachFeature(feature, layer, map) {
+  layer.bindPopup("<p>Number of Employees: " + feature.properties.economics_tot_emp + "</p>");
+
+  layer.on({
+    mouseover: function(){
+      this.openPopup();
+    },
+    mouseout: function(){
+      this.closePopup();
+    },
+    'add': function () {
+      layer.bringToBack()
+    }
+  });
+}
+
+function createEconStateChloro(data, layer) {
+  var EconStateChloro = L.geoJson(data, {
+    style: EconStatestyle,
+    onEachFeature: EconStateonEachFeature
+  })
+
+  EconStateChloro.addTo(layer);
+}
+
+function createEconStateLegend(map) {
+  legend = L.control({
+    position: 'bottomright'
+  });
+
+  legend.onAdd = function(map) {
+
+    var div = L.DomUtil.create('div', 'info legend'),
+        grades = [0, 510, 1190, 2460, 3520, 6300, 16400, 75830],
+        labels = [],
+        from, to;
+
+    for (var i = 0; i < grades.length; i++) {
+        from = grades[i];
+        to = grades[i + 1];
+
+        labels.push(
+            '<i style="background:' + getEconStateColor(from + 1) + '"></i> ' +
+            from + (to ? '&ndash;' + to : '+'));
+    }
+
+    div.innerHTML = labels.join('<br>');
+    return div;
+  };
+
+  legend.addTo(map);
+}
+
+///////End Fracking State Chloropleth Layer///////
+
+
+
 //calls function to create map
 $(document).ready(createMap);
 
