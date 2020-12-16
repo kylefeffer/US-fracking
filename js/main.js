@@ -834,58 +834,36 @@ function getCSVdata() {
   $.ajax({
     url: "data/StateStatistics.csv",
     dataType: "text",
-    success:
-      /* function(response){
-    var stateStats = parseCSV(response);
-    console.log(stateStats);
-    console.log(stateStats[0].State);
-  } */
-      function (data) {
-        var stateStats = parseCSV(data);
-        console.log(stateStats[0]);
-        console.log(Object.keys(stateStats[0]));
-        //var selectedState;
-        // for (var key in stateStats[0]) {
-        //       console.log(key, stateStats[0]["key"]);
-        // }
-        for (var i = 0; i < stateStats.length; i++) {
-          selectedState.push(stateStats[i]);
-        }
-/*         for (var i = 0; i < stateStats.length; i++) {
-          if (stateStats[i].State === "California") {
-            var callstate = stateStats[i];
-
-            //selectedState.push(stateStats[i]);
-            //Object.assign(selectedState, stateStats[i])
-            for (var key in stateStats[i]) {
-              console.log(key, stateStats[i][key]);
-            }
-            break;
-          }
-        } */
-
-        /*  var state_data = data.split(/\r?\n|\r/);
-      var table_data = '<table class="table table-bordered table-striped">';
-      for(var count = 0; count<state_data.length; count++)
-      {
-        var cell_data = state_data[count].split(",");
-        table_data += '<tr>';
-        for(var cell_count=0; cell_count<cell_data.length; cell_count++)
-        {
-          if(count === 0)
-          {
-          table_data += '<th>'+cell_data[cell_count]+'</th>';
-          }
-          else
-          {
-          table_data += '<td>'+cell_data[cell_count]+'</td>';
-          }
-        }
-      table_data += '</tr>';
+    success: function (data) {
+      var stateStats = parseCSV(data);
+      
+      for (var i = 0; i < stateStats.length; i++) {
+        selectedState.push(stateStats[i]);
       }
-      table_data += '</table>';
-      $('#externaldiv').html(table_data); */
-      },
+
+      //send to tab for table?//
+      /*  var state_data = data.split(/\r?\n|\r/);
+    var table_data = '<table class="table table-bordered table-striped">';
+    for(var count = 0; count<state_data.length; count++)
+    {
+      var cell_data = state_data[count].split(",");
+      table_data += '<tr>';
+      for(var cell_count=0; cell_count<cell_data.length; cell_count++)
+      {
+        if(count === 0)
+        {
+        table_data += '<th>'+cell_data[cell_count]+'</th>';
+        }
+        else
+        {
+        table_data += '<td>'+cell_data[cell_count]+'</td>';
+        }
+      }
+    table_data += '</tr>';
+    }
+    table_data += '</table>';
+    $('#externaldiv').html(table_data); */
+    },
   });
 }
 
