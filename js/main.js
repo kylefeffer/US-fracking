@@ -24,7 +24,8 @@ function createMap() {
   });
 
   var zoomHome = L.Control.zoomHome({ position: "topright" });
-  zoomHome.addTo(map);
+    zoomHome.addTo(map);
+
 
   var baseLayers = [
     {
@@ -45,12 +46,12 @@ function createMap() {
       layers: [
         {
           active: true,
-          name: '  Fracking By State',
+          name: 'Fracking By State',
           icon: '<i class="fas fa-oil-can"></i>',
           layer: FracByState
         },
         {
-          name: '  Fracking Well Points',
+          name: 'Fracking Well Points',
           icon: '<i class="fas fa-oil-can"></i>',
           layer: FracWellPoints
         }
@@ -61,13 +62,13 @@ function createMap() {
       layers: [
         {
           active: false,
-          name: '  Air Pollution',
+          name: 'Air Pollution',
           icon: '<i class="fas fa-smog"></i>',
           layer: AirPollution
         },
         {
           active: false,
-          name: '  Fracking Accidents',
+          name: 'Fracking Accidents',
           icon: '<i class="fas fa-skull-crossbones"></i>',
           layer: Fraccidents
         }
@@ -78,13 +79,13 @@ function createMap() {
       layers: [
         {
           active: false,
-          name: '  Earthquakes - Baseline (2000)',
+          name: 'Earthquakes - Baseline (2000)',
           icon: '<i class="fas fa-bacon"></i>',
           layer: EarthquakesBaseline
         },
         {
           active: false,
-          name: '  Earthquakes - Current (2020)',
+          name: 'Earthquakes - Current (2020)',
           icon: '<i class="fas fa-bacon"></i>',
           layer: EarthquakesCurrent
         }
@@ -95,7 +96,7 @@ function createMap() {
       layers: [
         {
           active: false,
-          name: '  Total Employment',
+          name: 'Total Employment',
           icon: '<i class="fas fa-money-bill-wave"></i>',
           layer: Economics
         }
@@ -657,7 +658,7 @@ function createPropSymbols(data, map, Earthquakeattributes, layer){
     }).addTo(layer);
 };
 
-function calcPropRadius(attValue, scale = 25) {
+function calcPropRadius(attValue, scale = 50) {
     //scale factor to adjust symbol size evenly
     var scaleFactor = scale;
     //area based on attribute value and scale factor
