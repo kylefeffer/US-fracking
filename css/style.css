@@ -66,6 +66,14 @@ body {
   display: inline-block;
 }
 
+#externaldiv{
+  height: 400px;
+  width: 100%;
+  margin: 16px;
+  display: inline-block;
+}
+
+
 .legend {
   text-align: left;
   line-height: 18px;

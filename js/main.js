@@ -1,6 +1,7 @@
 //init global so it can be used everywhere
 var map;
 var legend;
+var info = L.control();
 var FracByState = L.layerGroup();
 var FracWellPoints = L.layerGroup();
 var AirPollution = L.layerGroup();
@@ -88,6 +89,7 @@ function createMap() {
   getFracStateData(map, FracByState);
   getAirPolData(map, AirPollution);
   getFraccidentData(map, Fraccidents);
+  getCSVdata();
 
   map.on('overlayremove', function(eventLayer){
     if (eventLayer.name == 'Fracking By State'){ // We use the key/display name to refer to the layer
@@ -102,6 +104,7 @@ function createMap() {
   map.on('overlayadd', function(eventLayer){
     if (eventLayer.name == 'Fracking By State'){
       //console.log(eventLayer.name);
+      
       createFracStateLegend(map);
     }
     else if (eventLayer.name == 'Air Pollution'){
@@ -236,6 +239,9 @@ function FracStateonEachFeature(feature, layer, map) {
     },
     'add': function () {
       layer.bringToBack()
+    },
+    click: function populate() {
+      document.getElementById('externaldiv').innerHTML = "State: " + feature.properties.NAME+ "<br>" + "Number of Wells: " + feature.properties.NAME_count ;
     }
   });
 }
@@ -250,6 +256,7 @@ function createFracStateChloro(data, layer) {
 }
 
 function createFracStateLegend(map) {
+  if (legend instanceof L.Control) { map.removeControl(legend); }
   legend = L.control({
     position: 'bottomright'
   });
@@ -355,7 +362,9 @@ AirPollutionChoro.addTo(layer);
 }
 
 function createAirPollutionLegend(map) {
-legend = L.control({position: 'bottomright'});
+  if (legend instanceof L.Control) { map.removeControl(legend); }
+
+  legend = L.control({position: 'bottomright'});
 legend.onAdd = function (map) {
 
   var div = L.DomUtil.create('div', 'info legend'),
@@ -462,8 +471,99 @@ function createMarker(data, layer){
 
 /////////////////End Fraccident Layer/////////////////////
 
+//////////////Get CSV table data/////////////////////
 
+function getCSVdata() {
+  $.ajax({
+    url:"data/StateStats.csv",
+    dataType: "text",
+    success: 
+    /* function(response){
+    var statestats = parseCSV(response);
+    console.log(statestats);
+    console.log(statestats[0].State);
+  } */
+    function(data)
+    {
+      var statestats = parseCSV(data);
+    console.log(statestats);
+    console.log(statestats[0].State);
 
+      var state_data = data.split(/\r?\n|\r/);
+      var table_data = '<table class="table table-bordered table-striped">';
+      for(var count = 0; count<state_data.length; count++)
+      {
+        var cell_data = state_data[count].split(",");
+        table_data += '<tr>';
+        for(var cell_count=0; cell_count<cell_data.length; cell_count++)
+        {
+          if(count === 0)
+          {
+          table_data += '<th>'+cell_data[cell_count]+'</th>';
+          }
+          else
+          {
+          table_data += '<td>'+cell_data[cell_count]+'</td>';
+          }
+        }
+      table_data += '</tr>';
+      }
+      table_data += '</table>';
+      $('#externaldiv').html(table_data);
+    }
+  })
+}
+
+function parseCSV(str, opts = {headers: true}) {
+  var arr = [];
+  var quote = false;  // true means we're inside a quoted field
+  var col, c;
+
+  // iterate over each character, keep track of current row and column (of the returned array)
+  for (var row = col = c = 0; c < str.length; c++) {
+    var cc = str[c], nc = str[c+1];        // current character, next character
+    arr[row] = arr[row] || [];             // create a new row if necessary
+    arr[row][col] = arr[row][col] || '';   // create a new column (start with empty string) if necessary
+
+    // If the current character is a quotation mark, and we're inside a
+    // quoted field, and the next character is also a quotation mark,
+    // add a quotation mark to the current column and skip the next character
+    if (cc == '"' && quote && nc == '"') { arr[row][col] += cc; ++c; continue; }
+
+    // If it's just one quotation mark, begin/end quoted field
+    if (cc == '"') { quote = !quote; continue; }
+
+    // If it's a comma and we're not in a quoted field, move on to the next column
+    if (cc == ',' && !quote) { ++col; continue; }
+
+    // If it's a newline (CRLF) and we're not in a quoted field, skip the next character
+    // and move on to the next row and move to column 0 of that new row
+    if (cc == '\r' && nc == '\n' && !quote) { ++row; col = 0; ++c; continue; }
+
+    // If it's a newline (LF or CR) and we're not in a quoted field,
+    // move on to the next row and move to column 0 of that new row
+    if (cc == '\n' && !quote) { ++row; col = 0; continue; }
+    if (cc == '\r' && !quote) { ++row; col = 0; continue; }
+
+    // Otherwise, append the current character to the current column
+    arr[row][col] += cc;
+  }
+
+  if (opts.headers) {
+    let header = arr[0]
+    let rest = arr.slice(1)
+    return rest.map(r => {
+      return r.reduce((acc, v, i) => {
+        let key = header[i]
+        acc[key] = v
+        return acc
+      }, {})
+    })
+  }
+  else {
+    return arr;
+  }
+}
 //calls function to create map
 $(document).ready(createMap);
 
