@@ -31,27 +31,168 @@
     <script src="https://kit.fontawesome.com/112cfe59ee.js" crossorigin="anonymous"></script>
     
     <!--bootstrap links to css and js-->
-		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
   
   </head>
     
-  <body>
+    <body>
+
+      <div class = "fracking_header">
+	<h1 style="padding-top:125px">Impacts of Fracking in the U.S.</h1>
+	</div>
+
+	<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+	    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+		<span class="navbar-toggler-icon"></span>
+	    </button>
+	    <div class="collapse navbar-collapse" id="collapsibleNavbar">
+		<ul class="navbar-nav">
+		    <li class="nav-item">
+			<a class="navbar-brand">Fracking Maps</a>
+
+          <button type="button" class="btn btn-info" data-toggle="modal" data-target="#Info"><i class="fas fa-info-circle"></i> What is Fracking?</button>
+          <div id="Info" class="modal fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">What is Fracking?</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <p><img src="img/what_is_fracking.jpg" style="display:block; margin: 0 auto" alt="alt text"><p/>
+                  "Modern high-volume hydraulic fracturing is a technique used to enable the extraction of
+                  natural gas or oil from shale and other forms of “tight” rock (in other words, impermeable
+                  rock formations that lock in oil and gas and make fossil fuel production difficult). Large
+                  quantities of water, chemicals, and sand are blasted into these formations at pressures high
+                  enough to crack the rock, allowing the once-trapped gas and oil to flow to the surface."</p>
+                  <p><strong> How does fracking work?</strong></p>
+                  <p>"It involves blasting fluid deep below the earth’s surface to crack sedimentary rock
+                    formations—this includes shale, sandstone, limestone, and carbonite—to unlock natural
+                    gas and crude oil reserves."</p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+
+          <button type="button" class="btn btn-info" data-toggle="modal" data-target="#Stats"><i class="fas fa-signal"></i> Statistics</button>
+          <div id="Stats" class="modal fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Statistics</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <p>Table goes here</p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+
+
+          <button type="button" class="btn btn-info" data-toggle="modal" data-target="#FAQ"><i class="far fa-question-circle"></i> FAQ</button>
+          <div id="FAQ" class="modal fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Frequently Asked Questions</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <p><strong>Does fracking cause earthquakes?</strong></p>
+                  <p>According to the Natural Resources Defense Council (NRDC), "The pressure exerted on a rock formation by the fluids injected into
+                    these disposal wells can cause faults to shift, resulting in human-induced earthquakes. The central and eastern United States
+                    averaged just 25 annual earthquakes of magnitude 3 or higher (which is generally strong enough to feel) between 1973 and 2008 but
+                    experienced more than 1,000 of these quakes in 2015 alone."</p>
+                    <p>According to the Independent Petroleum Association of America (IPAA), "They say very rarely. Although induced seismicity (particularly in Oklahoma) has made
+                    headlines in recent years, earthquakes attributable to the actual fracking process
+                    are exceedingly rare and generally below the magnitude that people can actually feel.
+                    Induced earthquakes are more commonly linked to wastewater injection — a completely separate process from fracking."</p>
+                  <p><strong>How many American jobs has fracking created?</strong>
+                  <p>"Millions. A 2015 Harvard Business School/Boston Consulting Group analysis estimates that shale development created roughly
+                    2.7 million U.S. jobs in the first decade of the shale revolution. A 2013 study, commissioned by the U.S. Chamber of Commerce,
+                    projected fracking will create a total of 3.5 million U.S. jobs by 2035. A separate 2017 American Petroleum Institute (API) report
+                    found that the oil and natural gas industry supports 10.3 million jobs in the U.S. — a 500,000 increase since 2011 — and projects
+                    the industry will support an additional 1.9 million jobs by 2035."</p>
+                  <p><strong>How much water does fracking consume?</strong>
+                  <p>According to the United States Geological Survey (USGS), "Fracking consumes a massive amount of water. Anywhere between 1.5 million
+                    and 16 million gallons of water may be used to frack a single well, depending on a few factors, including the type of well and
+                    rock formation. Water used for hydraulic fracturing is typically fresh water taken from groundwater and surface water resources.
+                    Although there are increasing efforts to use nonpotable water, some of these sources also supply drinking water."</p>
+                  <p><strong>How does fracking affect air pollution?</strong>
+                  <p>According to the NRDC, "Air pollution from oil and natural gas production, including fracking activities, is a serious problem that
+                    threatens the health of nearby communities. Flaring (a controlled burn used for testing, safety, and waste-management purposes), venting
+                    (the direct release of gas into the atmosphere), leaking, combustion, and release of contaminants throughout the production, processing, transmission,
+                    and distribution of oil and natural gas are significant sources of air pollution."</p>
+                  <p>According to IPAA, "Several state departments of environmental protection have also installed air monitors at well sites and found that emissions during
+                    oil and natural gas development do not exceed public health thresholds."</p>
+                    <p><a href="https://www.ipaa.org/fracking/">Independent Petroleum Association of America (IPAA)</a></p>
+                    <p><a href="https://www.nrdc.org/stories/fracking-101#whyis">Natural Resources Defense Council (NRDC)</a></p>
+
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+
+            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#Sources"><i class="far fa-newspaper"></i> Sources</button>
+                <div id="Sources" class="modal fade" tabindex="-1" role="dialog">
+                  <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title">Sources</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        <p><a href="https://www.ipaa.org/fracking/">Independent Petroleum Association of America (IPAA)</a></p>
+                        <p><a href="https://www.nrdc.org/stories/fracking-101#whyis">Natural Resources Defense Council (NRDC)</a></p>
+                        <p><a href="https://earthquake.usgs.gov/earthquakes/search/">USGS Earthquake Data</a></p>
+                        <p><a href="https://www.bls.gov/oes/">US Bureau of Labor Statistics: Occupational Employment Statistics</a></p>
+                        <p><a href="https://earthjustice.org/features/campaigns/fracking-across-the-united-states">EarthJustice Fracking Accidents Data</a></p>
+                        <p><a href="https://www.fracfocus.org/">FracFocus Well Location Data</a></p>
+                        <p><a href="https://environmentamerica.org/sites/environment/files/reports/EA_FrackingNumbers_scrn.pdf">Environment America Air Pollution Data</a></p>
+                        <p><a href="https://friendsoftheearth.uk/climate/fracking-facts">Friends of the Earth</a></p>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                  </li>
+		</ul>
+	    </div>
+	</nav>
+
       <div class="container">
         <div class="row">
-          <div class="col-sm-9">
-            <div style="padding-left:16px;  padding-right:16px">
-              <h4>U.S. Fracking Accidents</h4>
+          <div class="col-sm-12">
+            <div style="padding-left:0px;  padding-right:0px">
               <div id="map"></div>
             </div>
           </div>
-          <div class="col-sm-3">
-            <div id="externaldiv"></div>
-          </div>
-
-        </div>
-
-      <!--link to main javascript file-->
+		
+	<!--link to main javascript file-->
       <script type="text/javascript" src="js/main.js"></script>
     </body>
 </html>
