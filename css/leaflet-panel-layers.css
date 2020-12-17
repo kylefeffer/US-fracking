@@ -109,7 +109,7 @@
 
 .leaflet-panel-layers {
 	padding: 4px;
-	background: rgba(255,255,255,0.5);
+	background: rgba(67, 191, 199,0.3);
 	box-shadow: -2px 0 8px rgba(0,0,0,0.3);
 }
 .leaflet-panel-layers.expanded {
@@ -126,7 +126,7 @@
 	border-top:1px solid rgba(0,0,0,0.3);
 }
 .leaflet-panel-layers-item {
-	min-height: 20px;
+	min-height: 6px;
 }
 .leaflet-panel-layers-margin {
 	height: 25px;
@@ -137,6 +137,7 @@
 	height: 20px;
 	width: 20px;
 	background: #fff;
+	margin-right: 5px;
 }
 .leaflet-panel-layers-group.collapsible .leaflet-panel-layers-icon:first-child {
 	min-width: 20px;
@@ -152,7 +153,7 @@
 	border-radius: 3px;
 }
 .leaflet-panel-layers-overlays .leaflet-panel-layers-item {
-	margin-bottom: 4px;
+	margin-bottom: 2px;
 	padding: 2px;
 	background: #fff;
 	border: 1px solid rgba(0,0,0,0.3);

@@ -48,7 +48,7 @@ function createMap() {
           name: "Fracking By State",
           icon: '<i class="fas fa-oil-can"></i>',
           layer: FracByState,
-        }
+        },
       ],
     },
     {
@@ -105,7 +105,7 @@ function createMap() {
     collapsibleGroups: true,
     autoZIndex: true,
     position: "topleft",
-    title: "Select Layer",
+    title: "<h6>Select Layer:</h6>",
   });
 
   map.addControl(panelLayers);
@@ -148,14 +148,12 @@ function getFracStateData(map) {
   $.ajax("data/frackingwells.geojson", {
     dataType: "json",
     success: function (response) {
-
       //function to create chloropleth
       createFracStateChloro(response, FracByState);
       createFracStateLegend(map);
     },
   });
 }
-
 
 ///Natural Breaks Distribution///
 function getFracStateColor(d) {
@@ -203,7 +201,7 @@ function FracStateonEachFeature(feature, layer, map) {
     add: function () {
       layer.bringToBack();
     },
-    click: populateClick
+    click: populateClick,
   });
 }
 
@@ -228,7 +226,7 @@ function createFracStateLegend(map) {
   legend.onAdd = function (map) {
     var div = L.DomUtil.create("div", "info legend"),
       grades = [0, 1, 221, 781, 3744, 7053, 13860, 17392],
-      labels = ['<strong> Number of Fracking Wells</strong>'],
+      labels = ["<strong> Number of Fracking Wells</strong>"],
       from,
       to;
 
@@ -260,7 +258,6 @@ function getAirPolData(map) {
   $.ajax("data/AirPollution.geojson", {
     dataType: "json",
     success: function (response) {
-      
       //create a Leaflet GeoJSON layer and add it to the map
       createAirPollutionChoro(response, AirPollution);
     },
@@ -310,8 +307,7 @@ function AirPollutiononEachFeature(feature, layer, map) {
     mouseout: function () {
       this.closePopup();
     },
-    click: populateClick
-    
+    click: populateClick,
   });
 }
 
@@ -333,7 +329,7 @@ function createAirPollutionLegend(map) {
   legend.onAdd = function (map) {
     var div = L.DomUtil.create("div", "info legend"),
       grades = [0, 10000, 100000, 500000, 2000000, 5000000, 20000000],
-      labels = ['<strong> Carbon Dioxide Emitted <br> (metric tons) </strong>'];
+      labels = ["<strong> Carbon Dioxide Emitted <br> (metric tons) </strong>"];
 
     // loop throughdensity intervals and generate a label with a colored square for each interval
     for (var i = 0; i < grades.length; i++) {
@@ -403,7 +399,7 @@ function FraccidentonEachFeature(feature, layer) {
     mouseout: function () {
       this.closePopup();
     },
-    click: populateClick
+    click: populateClick,
   });
 
   //return the circle marker to the L.geoJson pointToLayer option
@@ -533,7 +529,7 @@ function EarthquakeBaselinepointToLayer(feature, latlng, attributes) {
     mouseout: function () {
       this.closePopup();
     },
-    click: populateClick
+    click: populateClick,
   });
 
   //return the circle marker to the L.geoJson pointToLayer option
@@ -638,7 +634,7 @@ function EarthquakepointToLayer(feature, latlng, attributes) {
     mouseout: function () {
       this.closePopup();
     },
-    click: populateClick
+    click: populateClick,
   });
 
   //return the circle marker to the L.geoJson pointToLayer option
@@ -703,7 +699,7 @@ function EconStateonEachFeature(feature, layer, map) {
     add: function () {
       layer.bringToBack();
     },
-    click: populateClick
+    click: populateClick,
   });
 }
 
@@ -719,7 +715,7 @@ function createEconStateChloro(data, layer) {
 function createEconStateLegend(map) {
   if (legend instanceof L.Control) {
     map.removeControl(legend);
-  };
+  }
 
   legend = L.control({
     position: "bottomright",
@@ -728,7 +724,7 @@ function createEconStateLegend(map) {
   legend.onAdd = function (map) {
     var div = L.DomUtil.create("div", "info legend"),
       grades = [0, 510, 1190, 2460, 3520, 6300, 16400, 75830],
-      labels = ['<strong> Total Persons Employed </strong>'],
+      labels = ["<strong> Total Persons Employed </strong>"],
       from,
       to;
 
@@ -761,34 +757,40 @@ function getCSVdata() {
     url: "data/StateStatistics.csv",
     dataType: "text",
     success: function (data) {
+      //parse csv data and assign to local variable
       var stateStats = parseCSV(data);
-      
+
+      //iterate through local variable and push to global variable
       for (var i = 0; i < stateStats.length; i++) {
         selectedState.push(stateStats[i]);
       }
 
-      //send to tab for table?//
-       var state_data = data.split(/\r?\n|\r/);
-    var table_data = '<table class="table table-bordered table-striped">';
-    for(var count = 0; count<state_data.length; count++)
-    {
-      var cell_data = state_data[count].split(",");
-      table_data += '<tr>';
-      for(var cell_count=0; cell_count<cell_data.length; cell_count++)
+      //send table to tab//
+      var state_data = data.split(/\r?\n|\r/);
+      var table_data = '<table class="table table-bordered table-striped">';
+      for (var count = 0; count < state_data.length; count++) //create table
       {
-        if(count === 0)
-        {
-        table_data += '<th>'+cell_data[cell_count]+'</th>';
+        var cell_data = state_data[count].split(",");
+        table_data += "<tr>";
+        for (var cell_count = 0; cell_count < cell_data.length; cell_count++) {
+          if (count === 0) {
+            table_data +=
+              '<th><span class="smaller-font">' +
+              cell_data[cell_count] +
+              "</span></th>";
+          } else {
+            table_data +=
+              '<td><span class="smaller-font">' +
+              cell_data[cell_count].replace(/\d+/, (n) =>
+                parseFloat(n).toLocaleString("en")
+              ) +
+              "</span></td>";
+          }
         }
-        else
-        {
-        table_data += '<td>'+cell_data[cell_count]+'</td>';
-        }
+        table_data += "</tr>";
       }
-    table_data += '</tr>';
-    }
-    table_data += '</table>';
-    $('#Stats .modal-body').html(table_data);
+      table_data += "</table>";
+      $("#Stats .modal-body").html(table_data);
     },
   });
 }
@@ -869,21 +871,28 @@ function parseCSV(str, opts = { headers: true }) {
 /////////////////////End CSV Layer/////////////////////////
 
 ////////////////////Populate click on data layers//////////////////////
-function populateClick(e){
+function populateClick(e) {
   document.getElementById("externaldiv").innerHTML = "";
   for (var i = 0; i < selectedState.length; i++) {
     if (selectedState[i].State === e.target.feature.properties.NAME) {
-      document.getElementById("externaldiv").innerHTML = "Info Panel<br>"
+      document.getElementById("externaldiv").innerHTML =
+        "<b><u>Info Panel</u></b><br>";
       //console.log(selectedState[i]);
       for (var key in selectedState[i]) {
-        document.getElementById("externaldiv").innerHTML += '<b>' + key + '</b>' + ": " + selectedState[i][key].replace(/\d+/, n => parseFloat(n).toLocaleString("en")) + "<br>";
+        document.getElementById("externaldiv").innerHTML +=
+          "<b>" +
+          key +
+          "</b>" +
+          ": " +
+          selectedState[i][key].replace(/\d+/, (n) =>
+            parseFloat(n).toLocaleString("en")
+          ) +
+          "<br>";
         //console.log(key, selectedState[i][key]);
       }
       break;
     }
   }
-
-  
 }
 //////////////////////////End populate click////////////////////////////////////////
 

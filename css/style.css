@@ -38,6 +38,11 @@ h1 {
     padding-left: 16px;
 }
 
+h6 {
+  color: black;
+  font-size: 24px;
+}
+
 .modal-header {
   border-top: 1px solid white;
   border-left: 1px solid white;
@@ -121,4 +126,8 @@ body {
 
 .leaflet-marker-icon {
 display: block;
+}
+
+.smaller-font {
+  font-size: 0.8em;
 }
