@@ -88,10 +88,16 @@ h6 {
 }
 
 #externaldiv{
-  height: 400px;
+  height: 650px;
   width: 100%;
   margin: 16px;
   display: inline-block;
+  color: white;
+  background-color: #313B45;
+  border-style: double;
+  border-color: white;
+  box-shadow: 0 0 2px black;
+  font-size: 15px;
 }
 
 
