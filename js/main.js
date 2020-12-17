@@ -103,6 +103,7 @@ function createMap() {
   var panelLayers = new L.Control.PanelLayers(baseLayers, overLayers, {
     compact: true,
     collapsibleGroups: true,
+    autoZIndex: true,
     position: "topleft",
     title: "Select Layer",
   });
@@ -117,15 +118,6 @@ function createMap() {
   getEarthquakeBaselineData(map, EarthquakesBaseline);
   getEarthquakeData(map, EarthquakesCurrent);
   getCSVdata();
-
-  console.log((selectedState));
-  /* 
-  for (var prop in selectedState){
-    if (selectedState.hasOwnProperty(prop)) {
-      // handle prop as required
-      console.log(prop);
-  }
-  } */
 
   map.on("overlayremove", function (eventLayer) {
     if (eventLayer.name == "Fracking By State") {
@@ -156,8 +148,6 @@ function getFracStateData(map) {
   $.ajax("data/frackingwells.geojson", {
     dataType: "json",
     success: function (response) {
-      //create attribute array
-      var FracStateattributes = processFracStateData(response);
 
       //function to create chloropleth
       createFracStateChloro(response, FracByState);
@@ -166,22 +156,6 @@ function getFracStateData(map) {
   });
 }
 
-function processFracStateData(data) {
-  //empty array for attributes
-  var FracStateattributes = [];
-
-  //take properties of first feature
-  var properties = data.features[0].properties;
-
-  //push each attribute name to array
-  for (var attribute in properties) {
-    if (attribute.indexOf("NAME_count") > -1) {
-      FracStateattributes.push(attribute);
-    }
-  }
-
-  return FracStateattributes;
-}
 
 ///Natural Breaks Distribution///
 function getFracStateColor(d) {
@@ -286,24 +260,11 @@ function getAirPolData(map) {
   $.ajax("data/AirPollution.geojson", {
     dataType: "json",
     success: function (response) {
-      var airpollutionattributes = processAirPollutionData(response);
+      
       //create a Leaflet GeoJSON layer and add it to the map
-      // L.geoJson(response).addTo(map);
       createAirPollutionChoro(response, AirPollution);
-      //createAirPollutionLegend(response, map);
     },
   });
-}
-
-//initial creation of attributes
-function processAirPollutionData(data) {
-  //empty array to hold attributes
-  var airpollutionattributes = [];
-
-  //properties of the first feature in the dataset
-  var properties = data.features[0].properties;
-
-  return airpollutionattributes;
 }
 
 function getAirPollutionColor(d) {
@@ -403,26 +364,11 @@ function getFraccidentData(map) {
   $.ajax("data/Fraccidents.geojson", {
     dataType: "json",
     success: function (response) {
-      //var fraccidentsattributes = processFraccidentsData(response);
-
+      //create marker
       createMarker(response, Fraccidents);
-
-      //create a Leaflet GeoJSON layer and add it to the map
-      //L.geoJson(response).addTo(layer);
     },
   });
 }
-
-/* //initial creation of attributes
-function processFraccidentsData(data){
-  //empty array to hold attributes
-  var fraccidentsattributes = [];
-
-  //properties of the first feature in the dataset
-  var properties = data.features[0].properties;
-
-  return fraccidentsattributes;
-}; */
 
 //function to convert markers to circle markers
 function FraccidentpointToLayer(feature, latlng) {
@@ -514,9 +460,6 @@ function processEarthquakesBaselineData(data) {
       EarthquakeBaselineattributes.push(magattribute);
     }
   }
-
-  console.log(EarthquakeBaselineproperties);
-
   return EarthquakeBaselineattributes;
 }
 
@@ -710,29 +653,10 @@ function getEconStateData(map) {
     dataType: "json",
     success: function (response) {
       //create attribute array
-      var EconStateattributes = processEconStateData(response);
-      //console.log(EconStateattributes)
       //function to create chloropleth
       createEconStateChloro(response, Economics);
     },
   });
-}
-
-function processEconStateData(data) {
-  //empty array for attributes
-  var EconStateattributes = [];
-
-  //take properties of first feature
-  var properties = data.features[0].properties;
-
-  //push each attribute name to array
-  for (var attribute in properties) {
-    if (attribute.indexOf("economics_tot_emp") > -1) {
-      EconStateattributes.push(attribute);
-    }
-  }
-
-  return EconStateattributes;
 }
 
 ///Natural Breaks Distribution///
@@ -844,7 +768,7 @@ function getCSVdata() {
       }
 
       //send to tab for table?//
-      /*  var state_data = data.split(/\r?\n|\r/);
+       var state_data = data.split(/\r?\n|\r/);
     var table_data = '<table class="table table-bordered table-striped">';
     for(var count = 0; count<state_data.length; count++)
     {
@@ -864,7 +788,7 @@ function getCSVdata() {
     table_data += '</tr>';
     }
     table_data += '</table>';
-    $('#externaldiv').html(table_data); */
+    $('#Stats .modal-body').html(table_data);
     },
   });
 }
@@ -949,6 +873,7 @@ function populateClick(e){
   document.getElementById("externaldiv").innerHTML = "";
   for (var i = 0; i < selectedState.length; i++) {
     if (selectedState[i].State === e.target.feature.properties.NAME) {
+      document.getElementById("externaldiv").innerHTML = "Info Panel<br>"
       //console.log(selectedState[i]);
       for (var key in selectedState[i]) {
         document.getElementById("externaldiv").innerHTML += '<b>' + key + '</b>' + ": " + selectedState[i][key].replace(/\d+/, n => parseFloat(n).toLocaleString("en")) + "<br>";
@@ -960,9 +885,6 @@ function populateClick(e){
 
   
 }
-
-
-
 //////////////////////////End populate click////////////////////////////////////////
 
 //calls function to create map

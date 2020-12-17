@@ -119,6 +119,6 @@ body {
   width: auto;
 }
 
-.leaflet-marker-icon,
+.leaflet-marker-icon {
 display: block;
 }
