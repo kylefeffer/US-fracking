@@ -254,7 +254,7 @@ function createFracStateLegend(map) {
   legend.onAdd = function (map) {
     var div = L.DomUtil.create("div", "info legend"),
       grades = [0, 1, 221, 781, 3744, 7053, 13860, 17392],
-      labels = [],
+      labels = ['<strong> Number of Fracking Wells</strong>'],
       from,
       to;
 
@@ -372,7 +372,7 @@ function createAirPollutionLegend(map) {
   legend.onAdd = function (map) {
     var div = L.DomUtil.create("div", "info legend"),
       grades = [0, 10000, 100000, 500000, 2000000, 5000000, 20000000],
-      labels = [];
+      labels = ['<strong> Carbon Dioxide Emitted <br> (metric tons) </strong>'];
 
     // loop throughdensity intervals and generate a label with a colored square for each interval
     for (var i = 0; i < grades.length; i++) {
@@ -514,6 +514,8 @@ function processEarthquakesBaselineData(data) {
       EarthquakeBaselineattributes.push(magattribute);
     }
   }
+
+  console.log(EarthquakeBaselineproperties);
 
   return EarthquakeBaselineattributes;
 }
@@ -802,7 +804,7 @@ function createEconStateLegend(map) {
   legend.onAdd = function (map) {
     var div = L.DomUtil.create("div", "info legend"),
       grades = [0, 510, 1190, 2460, 3520, 6300, 16400, 75830],
-      labels = [],
+      labels = ['<strong> Total Persons Employed </strong>'],
       from,
       to;
 
@@ -955,6 +957,8 @@ function populateClick(e){
       break;
     }
   }
+
+  
 }
 
 
